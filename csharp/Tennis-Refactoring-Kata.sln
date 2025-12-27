@@ -45,4 +45,7 @@ Global
 		{173B2D39-AEB3-4B75-B0B6-D4B09997F65C}.Release|x86.ActiveCfg = Release|Any CPU
 		{173B2D39-AEB3-4B75-B0B6-D4B09997F65C}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
+	GlobalSection(RiderSharedRunConfigurations) = postSolution
+		File = ..\angular\.run\Wallaby.run.xml
+	EndGlobalSection
 EndGlobal

@@ -1,3 +1,5 @@
+using System;
+
 namespace Tennis
 {
     public class TennisGame1 : ITennisGame
@@ -24,59 +26,68 @@ namespace Tennis
         public string GetScore()
         {
             string score = "";
-            var tempScore = 0;
-            if (m_score1 == m_score2)
-            {
-                switch (m_score1)
-                {
-                    case 0:
-                        score = "Love-All";
-                        break;
-                    case 1:
-                        score = "Fifteen-All";
-                        break;
-                    case 2:
-                        score = "Thirty-All";
-                        break;
-                    default:
-                        score = "Deuce";
-                        break;
 
-                }
-            }
-            else if (m_score1 >= 4 || m_score2 >= 4)
-            {
-                var minusResult = m_score1 - m_score2;
-                if (minusResult == 1) score = "Advantage player1";
-                else if (minusResult == -1) score = "Advantage player2";
-                else if (minusResult >= 2) score = "Win for player1";
-                else score = "Win for player2";
-            }
-            else
-            {
-                for (var i = 1; i < 3; i++)
-                {
-                    if (i == 1) tempScore = m_score1;
-                    else { score += "-"; tempScore = m_score2; }
-                    switch (tempScore)
-                    {
-                        case 0:
-                            score += "Love";
-                            break;
-                        case 1:
-                            score += "Fifteen";
-                            break;
-                        case 2:
-                            score += "Thirty";
-                            break;
-                        case 3:
-                            score += "Forty";
-                            break;
-                    }
-                }
-            }
+            if (IsPlayer1ScoreEqualsPlayer2Score()) score = GetEvenScore(m_score1);
+
+            else if (IsEndgame()) score = GetEndGameScore(m_score1, m_score2);
+
+            else score = GetNormalScore();
+
             return score;
         }
+
+
+        private bool IsPlayer1ScoreEqualsPlayer2Score() => m_score1 == m_score2;
+        private bool IsEndgame() => m_score1 >= 4 || m_score2 >= 4;
+
+
+        private string GetEvenScore(int score1)
+        {
+            return score1 switch
+            {
+                0 => "Love-All",
+                1 => "Fifteen-All",
+                2 => "Thirty-All",
+                _ => "Deuce",
+            };
+        }
+
+        private string GetEndGameScore(int score1, int score2)
+        {
+            string score;
+
+            var minusResult = Math.Abs(score1 - score2);
+
+            if (minusResult == 1)
+                score = score1 > score2 ? "Advantage player1" : "Advantage player2";
+            else
+                score = score1 > score2 ? "Win for player1" : "Win for player2";
+
+
+            return score;
+        }
+
+        private string GetNormalScore()
+        {
+
+            var normalScore1 = GetScorePoints(m_score1);
+            var normalScore2 = GetScorePoints(m_score2);
+            return normalScore1 + "-" + normalScore2;
+
+        }
+
+        private string GetScorePoints(int score)
+        {
+            return score switch
+            {
+                0 => "Love",
+                1 => "Fifteen",
+                2 => "Thirty",
+                3 => "Forty",
+                _ => "",
+            };
+        }
+
     }
 }
 
