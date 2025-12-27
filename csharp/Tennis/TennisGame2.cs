@@ -1,112 +1,49 @@
 namespace Tennis
 {
-    public class TennisGame2 : ITennisGame
+    public class TennisGame2() : ITennisGame
     {
-        private int p1point;
-        private int p2point;
-
-        private string p1res = "";
-        private string p2res = "";
-        private string player1Name;
-        private string player2Name;
-
-        public TennisGame2(string player1Name, string player2Name)
-        {
-            this.player1Name = player1Name;
-            p1point = 0;
-            this.player2Name = player2Name;
-        }
+        private int _p1Point;
+        private int _p2Point;
 
         public string GetScore()
         {
-            var score = "";
-            if (p1point == p2point && p1point < 3)
+            // Tied score
+            if (_p1Point == _p2Point)
             {
-                if (p1point == 0)
-                    score = "Love";
-                if (p1point == 1)
-                    score = "Fifteen";
-                if (p1point == 2)
-                    score = "Thirty";
-                score += "-All";
-            }
-            if (p1point == p2point && p1point > 2)
-                score = "Deuce";
-
-            if (p1point > 0 && p2point == 0)
-            {
-                if (p1point == 1)
-                    p1res = "Fifteen";
-                if (p1point == 2)
-                    p1res = "Thirty";
-                if (p1point == 3)
-                    p1res = "Forty";
-
-                p2res = "Love";
-                score = p1res + "-" + p2res;
-            }
-            if (p2point > 0 && p1point == 0)
-            {
-                if (p2point == 1)
-                    p2res = "Fifteen";
-                if (p2point == 2)
-                    p2res = "Thirty";
-                if (p2point == 3)
-                    p2res = "Forty";
-
-                p1res = "Love";
-                score = p1res + "-" + p2res;
+                if (_p1Point < 3)
+                    return ScoreToString(_p1Point) + "-All";
+                return "Deuce";
             }
 
-            if (p1point > p2point && p1point < 4)
-            {
-                if (p1point == 2)
-                    p1res = "Thirty";
-                if (p1point == 3)
-                    p1res = "Forty";
-                if (p2point == 1)
-                    p2res = "Fifteen";
-                if (p2point == 2)
-                    p2res = "Thirty";
-                score = p1res + "-" + p2res;
-            }
-            if (p2point > p1point && p2point < 4)
-            {
-                if (p2point == 2)
-                    p2res = "Thirty";
-                if (p2point == 3)
-                    p2res = "Forty";
-                if (p1point == 1)
-                    p1res = "Fifteen";
-                if (p1point == 2)
-                    p1res = "Thirty";
-                score = p1res + "-" + p2res;
-            }
+            // If either player has at least 4 points, check for advantage/win
+            if (_p1Point < 4 && _p2Point < 4) return ScoreToString(_p1Point) + "-" + ScoreToString(_p2Point);
+            
+            var diff = _p1Point - _p2Point;
 
-            if (p1point > p2point && p2point >= 3)
+            return diff switch
             {
-                score = "Advantage player1";
-            }
+                1 => "Advantage player1",
+                -1 => "Advantage player2",
+                >= 2 => "Win for player1",
+                <= -2 => "Win for player2",
+                _ => ScoreToString(_p1Point) + "-" + ScoreToString(_p2Point)
+            };
 
-            if (p2point > p1point && p1point >= 3)
-            {
-                score = "Advantage player2";
-            }
-
-            if (p1point >= 4 && p2point >= 0 && (p1point - p2point) >= 2)
-            {
-                score = "Win for player1";
-            }
-            if (p2point >= 4 && p1point >= 0 && (p2point - p1point) >= 2)
-            {
-                score = "Win for player2";
-            }
-            return score;
+            // Normal score (both less than 4 and not tied)
         }
+
+        private static string ScoreToString(int score) => score switch
+        {
+            0 => "Love",
+            1 => "Fifteen",
+            2 => "Thirty",
+            3 => "Forty",
+            _ => string.Empty
+        };
 
         public void SetP1Score(int number)
         {
-            for (int i = 0; i < number; i++)
+            for (var i = 0; i < number; i++)
             {
                 P1Score();
             }
@@ -122,22 +59,26 @@ namespace Tennis
 
         private void P1Score()
         {
-            p1point++;
+            _p1Point++;
         }
 
         private void P2Score()
         {
-            p2point++;
+            _p2Point++;
         }
 
         public void WonPoint(string player)
         {
-            if (player == "player1")
-                P1Score();
-            else
-                P2Score();
+            switch (player)
+            {
+                case "player1":
+                    P1Score();
+                    break;
+                default:
+                    P2Score();
+                    break;
+            }
         }
 
     }
 }
-
