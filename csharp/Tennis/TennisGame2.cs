@@ -1,7 +1,9 @@
 namespace Tennis
 {
-    public class TennisGame2() : ITennisGame
+    public class TennisGame2(string player1Name, string player2Name) : ITennisGame
     {
+        public string Player1Name { get; } = player1Name;
+        public string Player2Name { get; } = player2Name;
         private int _p1Point;
         private int _p2Point;
 
